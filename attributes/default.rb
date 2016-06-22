@@ -44,3 +44,6 @@ default['observium']['alert']['default_only'] = true
 default['observium']['alert']['email_enable'] = true
 default['observium']['alert']['uptime_warning'] = '86400'
 default['observium']['alert']['port_status'] = false
+
+default['observium']['svn']['username'] = 'observium'
+default['observium']['svn']['password'] = 'observium'

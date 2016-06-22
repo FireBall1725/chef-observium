@@ -79,24 +79,26 @@ mysql_database node['observium']['db']['db_name'] do
   action :create
 end
 
-# Community Edition
-#ark 'observium' do
-#  url 'http://www.observium.org/observium-community-latest.tar.gz'
-#  prefix_root '/opt'
-#  path '/opt'
-#  home_dir node['observium']['install_dir']
-#  owner node['apache']['user']
-#  action :put
-#end
-
-# Paid Edition
-subversion 'observium' do
-  repository 'http://svn.observium.org/svn/observium/branches/stable'
-  svn_username node['observium']['svn']['username']
-  svn_password node['observium']['svn']['password']
-  destination node['observium']['install_dir']
-  revision 'HEAD'
-  action :checkout
+if node['observium']['community_edition'] == true
+  # Community Edition
+  ark 'observium' do
+    url 'http://www.observium.org/observium-community-latest.tar.gz'
+    prefix_root '/opt'
+    path '/opt'
+    home_dir node['observium']['install_dir']
+    owner node['apache']['user']
+    action :put
+  end
+else
+  # Paid Edition
+  subversion 'observium' do
+    repository 'http://svn.observium.org/svn/observium/branches/stable'
+    svn_username node['observium']['svn']['username']
+    svn_password node['observium']['svn']['password']
+    destination node['observium']['install_dir']
+    revision 'HEAD'
+    action :checkout
+  end
 end
 
 template "#{node['observium']['install_dir']}/config.php" do

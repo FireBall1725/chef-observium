@@ -21,6 +21,7 @@ default['observium']['installed'] = true
 default['observium']['install_dir'] = '/opt/observium'
 default['observium']['server_name'] = 'observium.example.com'
 default['observium']['server_aliases'] = ['observium.localhost']
+default['observium']['community_edition'] = true
 
 default['observium']['device_status']['devices'] = true
 default['observium']['device_status']['ports'] = false

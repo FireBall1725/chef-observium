@@ -8,38 +8,19 @@ require 'rubygems'
 include_recipe 'apache2'
 include_recipe 'mysql::server'
 
-if platform?('centos', 'redhat')
-  include_recipe 'yum'
-  include_recipe 'yum-epel'
-  include_recipe 'yum-repoforge'
-end
-
 # http://www.cryptocracy.com/blog/2014/04/29/five-things-i-hate-about-chef/
 # require mysql fails due to https://sethvargo.com/using-gems-with-chef/
 
 # Run first because of dependencies for mysql gem
-if platform?('ubuntu', 'debian')
-  %w(mcrypt libapache2-mod-php5 php5-cli php5-mysql php5-gd php5-mcrypt php5-json php-pear snmp fping
-     mysql-server mysql-client python-mysqldb rrdtool subversion whois mtr-tiny ipmitool
-     graphviz imagemagick build-essential libmysqlclient-dev).each do |p|
-    package p do
-      action :install
-    end
+%w(mcrypt libapache2-mod-php5 php5-cli php5-mysql php5-gd php5-mcrypt php5-json php-pear snmp fping
+   mysql-server mysql-client python-mysqldb rrdtool subversion whois mtr-tiny ipmitool
+   graphviz imagemagick build-essential libmysqlclient-dev).each do |p|
+  package p do
+    action :install
   end
-  package ['sendmail', 'sendmail-bin'] do
-    action :install if node['observium']['alert']['email_enable'] == true
-  end
-else
-  %w(wget ruby-devel gcc rubygems php mysql mysql-devel php-mysql php-gd
-     php-snmp php-pear net-snmp net-snmp-utils graphviz subversion rrdtool
-     ImageMagick jwhois nmap ipmitool MySQL-python).each do |p|
-    package p do
-      action :install
-    end
-  end
-  package ['sendmail'] do
-    action :install if node['observium']['alert']['email_enable'] == true
-  end
+end
+package ['sendmail', 'sendmail-bin'] do
+  action :install if node['observium']['alert']['email_enable'] == true
 end
 
 chef_gem 'mysql2' do
@@ -48,13 +29,6 @@ chef_gem 'mysql2' do
 end
 
 Gem.clear_paths
-
-if platform?('centos', 'redhat')
-  # since include_recipe yum-epel runs later than .run_action()
-  %w(php-mcrypt fping collectd-rrdtool).each do |pkg|
-    package pkg
-  end
-end
 
 # Ruby code in the ruby_block resource is evaluated with other resources during
 # convergence, whereas Ruby code outside of a ruby_block resource is evaluated

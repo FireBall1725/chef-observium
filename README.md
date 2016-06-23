@@ -4,7 +4,6 @@ Observium cookbook installs [_Observium_](http://www.observium.org) network moni
 
 ## Supported Platforms
 
-- CentOS 6
 - Ubuntu 14.04
 - Debian 7
 
@@ -34,3 +33,4 @@ Include `observium` in your node's `run_list`:
 ## License and Authors
 
 Author: Petar Koraca (pkoraca@gmail.com)
+Updated By: Erin Reed (ereed@curse.com)

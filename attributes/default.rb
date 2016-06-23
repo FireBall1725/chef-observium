@@ -6,6 +6,7 @@ when 'debian', 'ubuntu'
   default['mysql']['version'] = '5.5'
   default['apache']['user'] = 'www-data'
   default['apache']['group'] = 'www-data'
+  default['apache']['version'] = '2.4'
 when 'centos', 'redhat'
   case node[:platform_version]
   when '<= 6'
@@ -17,7 +18,7 @@ when 'centos', 'redhat'
   default['apache']['group'] = 'apache'
 end
 
-default['observium']['installed'] = true
+default['observium']['installed'] = false
 default['observium']['install_dir'] = '/opt/observium'
 default['observium']['server_name'] = 'observium.example.com'
 default['observium']['server_aliases'] = ['observium.localhost']

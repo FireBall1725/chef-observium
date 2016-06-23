@@ -3,16 +3,18 @@ driver:
   name: vagrant
 
 provisioner:
-  name: chef_solo
+  name: chef_zero
 
 platforms:
-  - name: centos-6.6
-  - name: centos-7.1
   - name: ubuntu-14.04
-    run_list: recipe[apt]
-  - name: debian-7.8
-    run_list: recipe[apt]
+    driver:
+      box: curse-14.04.2
+      box_url: http://cursecomms.s3-website-us-east-1.amazonaws.com/curse-14.04.2.box
+      network:
+        - ["forwarded_port", {guest: 80, host: 8001}]
 
 suites:
   - name: default
-    run_list: recipe[observium]
+    run_list:
+      - recipe[apt]
+      - recipe[observium]

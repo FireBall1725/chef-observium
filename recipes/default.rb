@@ -19,10 +19,9 @@ end
 
 # Run first because of dependencies for mysql gem
 if platform?('ubuntu', 'debian')
-  %w(build-essential libmysqlclient-dev libapache2-mod-php5 php5-cli php5-mysql
-     php5-gd php5-snmp php-pear snmp graphviz php5-mcrypt php5-json
-     subversion mysql-client rrdtool fping imagemagick whois mtr-tiny nmap
-     ipmitool python-mysqldb).each do |p|
+  %w(mcrypt libapache2-mod-php5 php5-cli php5-mysql php5-gd php5-mcrypt php5-json php-pear snmp fping
+     mysql-server mysql-client python-mysqldb rrdtool subversion whois mtr-tiny ipmitool
+     graphviz imagemagick build-essential libmysqlclient-dev).each do |p|
     package p do
       action :install
     end
@@ -76,7 +75,21 @@ mysql_database node['observium']['db']['db_name'] do
     username: 'root',
     password: node['mysql']['server_root_password']
   )
+  encoding 'UTF8'
+  owner node['observium']['db']['user']
   action :create
+end
+
+mysql_database_user node['observium']['db']['user'] do
+  connection(
+    host: node['observium']['db']['host'],
+    username: 'root',
+    password: node['mysql']['server_root_password']
+  )
+  database_name node['observium']['db']['db_name']
+  host          'localhost'
+  privileges    [:all]
+  action        :grant
 end
 
 if node['observium']['community_edition'] == true
@@ -122,12 +135,16 @@ directory "#{node['observium']['install_dir']}/logs" do
   action :create
 end
 
-# only run the execute blocks, if not allready set up
+# Make sure mcrypt is enabled
+execute 'php5enmod mcrypt' do
 
-if  node['observium']['installed'] == false
+end
+
+# only run the execute blocks, if not allready set up
+if node['observium']['installed'] == false
 
   # Setup the MySQL database and insert the default schema
-  execute 'php includes/update/update.php' do
+  execute './discovery.php -u' do
     cwd node['observium']['install_dir']
     # not_if ''
   end
